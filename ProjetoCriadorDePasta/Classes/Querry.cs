@@ -265,7 +265,10 @@ COALESCE(pessoa.PSEUDONIMO, '')
 	'|',
 	0 AS PERMITEAPROVEITAMENTOCREDITO,
 	'|',
-	PESSOA.ATIVO,
+case
+    when PESSOA.ATIVO = 1 then '1'
+    when pessoa.ativo = 0 then '0'
+    else '0' end,
 	'|',
 	CASE 
 		WHEN COALESCE(
@@ -275,7 +278,7 @@ COALESCE(pessoa.PSEUDONIMO, '')
 		WHEN COALESCE(
 				(SELECT FILIAL FROM CADCLI WHERE CADCLI.CLIENTE = PESSOA.ID),
 				(SELECT TOP 1 ID FROM CADFIL WHERE ATIVO = 1 ORDER BY ID ASC)
-			) = 30 THEN 2
+			) = 50 THEN 2
 		ELSE 99 -- valor padrão, caso não atenda nenhuma condição
 	END AS filial,	
 	'|',				   
@@ -699,7 +702,7 @@ ORDER BY PESSOAID ASC
                 {
                     cn.Open();
                     string query = @"
-                   SELECT distinct
+SELECT
 	PESSOA.ID - 1000000,
 	'|',
 	CASE WHEN PESSOA.TIPONATUREZA = 'F' THEN 1
@@ -708,22 +711,25 @@ ORDER BY PESSOAID ASC
 	'|',
 	PESSOA.CNPJCPF,
 	'|',
-	REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-COALESCE(PESSOA.NOME, '')
+		REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+COALESCE(pessoa.nome, '')
 ,'Ç','C'),'Ñ','N'),'Ý','Y'),'Á','A'),'À','A'),'Â','A'),'Ã','A'),'Ä','A'),'É','E'),'È','E'),'Ê','E'),'Ë','E'),'Í','I'),'Ì','I'),'Î','I'),'Ï','I'),'Ó','O'),'Ò','O'),'Ô','O'),'Õ','O'),'Ö','O'),'Ú','U'),'Ù','U'),'Û','U'),'Ü','U'),'–',''),'-',''),
 	'|',
-CASE 
+	CASE 
 		WHEN LEN(PESSOA.PSEUDONIMO) < 2 THEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-COALESCE(PESSOA.NOME, '')
+COALESCE( pessoa.nome, '')
 ,'Ç','C'),'Ñ','N'),'Ý','Y'),'Á','A'),'À','A'),'Â','A'),'Ã','A'),'Ä','A'),'É','E'),'È','E'),'Ê','E'),'Ë','E'),'Í','I'),'Ì','I'),'Î','I'),'Ï','I'),'Ó','O'),'Ò','O'),'Ô','O'),'Õ','O'),'Ö','O'),'Ú','U'),'Ù','U'),'Û','U'),'Ü','U'),'–',''),'-','')
 		WHEN PESSOA.PSEUDONIMO IS NULL THEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-COALESCE(PESSOA.NOME, '')
+COALESCE(pessoa.nome, '')
+,'Ç','C'),'Ñ','N'),'Ý','Y'),'Á','A'),'À','A'),'Â','A'),'Ã','A'),'Ä','A'),'É','E'),'È','E'),'Ê','E'),'Ë','E'),'Í','I'),'Ì','I'),'Î','I'),'Ï','I'),'Ó','O'),'Ò','O'),'Ô','O'),'Õ','O'),'Ö','O'),'Ú','U'),'Ù','U'),'Û','U'),'Ü','U'),'–',''),'-','')
+		WHEN PESSOA.PSEUDONIMO = 'NULL' THEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+COALESCE(pessoa.nome, '')
 ,'Ç','C'),'Ñ','N'),'Ý','Y'),'Á','A'),'À','A'),'Â','A'),'Ã','A'),'Ä','A'),'É','E'),'È','E'),'Ê','E'),'Ë','E'),'Í','I'),'Ì','I'),'Î','I'),'Ï','I'),'Ó','O'),'Ò','O'),'Ô','O'),'Õ','O'),'Ö','O'),'Ú','U'),'Ù','U'),'Û','U'),'Ü','U'),'–',''),'-','')
 		WHEN PESSOA.PSEUDONIMO = '' THEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-COALESCE(PESSOA.NOME, '')
+COALESCE(pessoa.nome, '')
 ,'Ç','C'),'Ñ','N'),'Ý','Y'),'Á','A'),'À','A'),'Â','A'),'Ã','A'),'Ä','A'),'É','E'),'È','E'),'Ê','E'),'Ë','E'),'Í','I'),'Ì','I'),'Î','I'),'Ï','I'),'Ó','O'),'Ò','O'),'Ô','O'),'Õ','O'),'Ö','O'),'Ú','U'),'Ù','U'),'Û','U'),'Ü','U'),'–',''),'-','')
 	ELSE REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-COALESCE(PESSOA.PSEUDONIMO, '')
+COALESCE(pessoa.PSEUDONIMO, '')
 ,'Ç','C'),'Ñ','N'),'Ý','Y'),'Á','A'),'À','A'),'Â','A'),'Ã','A'),'Ä','A'),'É','E'),'È','E'),'Ê','E'),'Ë','E'),'Í','I'),'Ì','I'),'Î','I'),'Ï','I'),'Ó','O'),'Ò','O'),'Ô','O'),'Õ','O'),'Ö','O'),'Ú','U'),'Ù','U'),'Û','U'),'Ü','U'),'–',''),'-','')
 	END,
 	'|',
@@ -737,7 +743,7 @@ COALESCE(PESSOA.PSEUDONIMO, '')
 	'|',
 	case when PESSOA.INSCRICAOESTADUAL <> '' and PESSOA.INSCRICAOESTADUAL <> 'ISENTO' then 1
 	when PESSOA.INSCRICAOESTADUAL = 'ISENTO' then 2
-	when PESSOA.INSCRICAOESTADUAL = '' then 9 else 9 end as contribuinte,
+	when PESSOA.INSCRICAOESTADUAL = '' then 9 else 9 end as contribuinte,	
 	'|',
 	CASE CADFOR.TIPO
 		WHEN 'F' THEN 2
@@ -750,10 +756,10 @@ COALESCE(PESSOA.PSEUDONIMO, '')
 	'|',
 	NULL AS HOMEPAGE,
 	'|',
-	CASE 
-     WHEN PESSOA.ATIVO = 'true' THEN 1 
-    ELSE 0 
-     END AS ATIVO
+case
+    when PESSOA.ATIVO = 1 then '1'
+    when pessoa.ativo = 0 then '0'
+    else '1' end
 FROM PESSOA
 LEFT JOIN CONTRIBUINTE ON CONTRIBUINTE.ID = PESSOA.CONTRIBUINTEID
 JOIN CADFOR ON CADFOR.FORNECEDOR + 1000000 = PESSOA.ID 
@@ -1106,7 +1112,7 @@ FROM CESTFISCAL";
 	NCMFISCAL.NOME,
 	'|',
 	case NCMFISCAL.ATIVO when 'TRUE' then 1 else 0 end 
-FROM NCMFISCAL";
+FROM NCMFISCAL where LEN(NCMFISCAL.ID) = 8";
 
                     SqlCommand command = new SqlCommand(query, cn);
                     SqlDataReader reader = command.ExecuteReader();
@@ -1703,7 +1709,10 @@ COALESCE(cadpro.descricao, '')
 	'|',
 	CADPRO.EXTIPIFISCALID,
 	'|',
-	CADPRO.ATIVO,
+case
+    when CADPRO.ATIVO = 1 then '1'
+    when CADPRO.ATIVO = 0 then '0'
+    else '0' end,
 	'|',
 	CASE CADPRO.EDITAR
 		WHEN 'S' THEN 1
@@ -1781,7 +1790,9 @@ WHERE CADPRO.ID > 1";
                     string query = @"SELECT 
 	CADPRO.ID,
 	'|',
-	ESTSAL.FILIAL,
+CASE
+	WHEN ESTSAL.FILIAL = 50 THEN 2
+	ELSE ESTSAL.FILIAL END,
 	'|',
 	1 AS TABELAPRECO,
 	'|',
@@ -1801,7 +1812,9 @@ WHERE CADPRO.ID > 1";
 	'|',
 	case ESTSAL.ATIVO when 'true' then 1 else 0 end,
     '|',
-	estsal.descontov
+CASE
+	WHEN estsal.descontov IS NULL THEN 0
+	ELSE estsal.descontov END
  FROM CADPRO
  JOIN ESTSAL ON ESTSAL.MATRICULA = CADPRO.ID
  LEFT JOIN (
@@ -1857,7 +1870,9 @@ WHERE CADPRO.ID > 1";
                     string query = @"SELECT 
 	CADPRO.ID AS PRODUTOID, 
 	'|',
-	ESTSAL.FILIAL AS FILIALID,
+CASE 
+	WHEN ESTSAL.FILIAL = 50 THEN 2
+	ELSE ESTSAL.FILIAL END AS FILIALID,
 	'|',
 	CASE
 		WHEN LEN(LTRIM(RTRIM(GRADE))) > 0
@@ -1869,7 +1884,9 @@ WHERE CADPRO.ID > 1";
 	'|',
 	case ESTGRA.ATIVO when 'true' then 1 else 0 end,
     '|',
-	estsal.ESTOQUE_MINIMOV
+CASE
+	WHEN estsal.ESTOQUE_MINIMOV IS NULL THEN 0
+	ELSE  estsal.ESTOQUE_MINIMOV END
 FROM CADPRO
 JOIN ESTSAL ON ESTSAL.MATRICULA = CADPRO.ID
 JOIN ESTGRA ON ESTGRA.IDESTSAL = ESTSAL.ID
@@ -2259,7 +2276,9 @@ WHERE CLIDOC.VR_PARCELA > COALESCE(CLIDOC.VR_PAGO, 0) AND CLIDOC.ATIVO = 1
                 {
                     cn.Open();
                     string query = @"SELECT
-	CAST(FORDOC.FILIAL AS VARCHAR(100)),
+CASE
+	when CAST(FORDOC.FILIAL AS VARCHAR(100)) = '50' then '2'
+	else CAST(FORDOC.FILIAL AS VARCHAR(100)) end,
 	'| ',		-- Codigo da Filial
 	CASE WHEN CADPOR.DEBITO = 'N' AND CADPOR.CREDITO = 'S' THEN '1' ELSE '2' END,			
 	'| ',		-- Tipo do Documento 1 - Receber e 2 - Pagar
@@ -2270,8 +2289,13 @@ WHERE CLIDOC.VR_PARCELA > COALESCE(CLIDOC.VR_PAGO, 0) AND CLIDOC.ATIVO = 1
 	COALESCE(FORDOC.PARCELA, ''),		
 	'| ',		-- Numero da Parcela
 	CONVERT(VARCHAR(100), FORDOC.DT_EMISSAO, 103),			
-	'| ',		-- Data de Emissao
-	CONVERT(VARCHAR(100), FORDOC.DT_VENCIMENTO, 103),			
+	'| ',		-- Data de Emissao	
+	CONVERT(VARCHAR(100),
+CASE
+	when FORDOC.DT_VENCIMENTO < FORDOC.DT_EMISSAO then FORDOC.DT_EMISSAO
+	else FORDOC.DT_VENCIMENTO
+		
+	end, 103) as DT_VENCIMENTO,			
 	'| ',		-- Data de Vencimento
 	CONVERT(VARCHAR(100), FORDOC.DT_PAGAMENTO, 103),		
 	'| ',		-- Data de Baixa
@@ -2293,9 +2317,17 @@ WHERE CLIDOC.VR_PARCELA > COALESCE(CLIDOC.VR_PAGO, 0) AND CLIDOC.ATIVO = 1
 	'| ',		-- Numero da Fatura
 	CAST(COALESCE(FORDOC.DUPLICATA, '') AS VARCHAR(20)),			
 	'| ',		-- Numero da Duplicat
-	REPLACE(REPLACE(COALESCE(FORDOC.TEXTO, ''), CHAR(13), ''), CHAR(10), ''),			
+	REPLACE(REPLACE(
+		COALESCE(FORDOC.TEXTO, '') +
+		CASE
+			when
+				FORDOC.DT_VENCIMENTO < FORDOC.DT_EMISSAO
+				then  ' [VENCIMENTO AJUSTADO DE ' + CONVERT(VARCHAR(10), FORDOC.DT_VENCIMENTO, 103) + ' PARA ' + CONVERT(VARCHAR(10), FORDOC.DT_EMISSAO, 103) + ']'
+				else ''
+		end,
+		CHAR(13), ''), CHAR(10), ''),		
 	'| ',		-- Observacoes
-	1
+	CASE COALESCE(FORDOC.USU_EXC, 0) WHEN 0 THEN 1 ELSE 0 END
 				-- Ativo
 
 FROM FORDOC 
@@ -2347,7 +2379,9 @@ WHERE FORDOC.VR_PARCELA > COALESCE(FORDOC.VR_PAGO, 0) AND CASE COALESCE(FORDOC.U
                     string query = @"SELECT 
 	CADPRO.ID AS PRODUTOID, 
 	'|',
-	ESTSAL.FILIAL AS FILIALID,
+CASE 
+	WHEN ESTSAL.FILIAL = 50 THEN 2
+	ELSE ESTSAL.FILIAL END AS FILIALID,
 	'|',
 	CASE
 		WHEN LEN(LTRIM(RTRIM(GRADE))) > 0
@@ -2488,7 +2522,9 @@ ORDER BY PRODUTOID ASC
                     string query = @"SELECT 
 	CADPRO.ID AS PRODUTOID, 
 	'|',
-	ESTSAL.FILIAL AS FILIALID,
+CASE 
+	WHEN ESTSAL.FILIAL = 50 THEN 2
+	ELSE ESTSAL.FILIAL END AS FILIALID,
 	'|',
 	CASE
 		WHEN LEN(LTRIM(RTRIM(GRADE))) > 0
@@ -2549,7 +2585,22 @@ ORDER BY PRODUTOID ASC
                 {
                     cn.Open();
                     string query = @"SELECT
-	CAST(CLIDOC.FILIAL AS VARCHAR(100)),
+	CASE 
+		WHEN CLIDOC.FILIAL = 1 THEN 1
+		WHEN CLIDOC.FILIAL = 2 THEN 2
+		WHEN CLIDOC.FILIAL = 3 THEN 3
+		WHEN CLIDOC.FILIAL = 4 THEN 4
+		WHEN CLIDOC.FILIAL = 10 THEN 5
+		WHEN CLIDOC.FILIAL = 11 THEN 6
+		WHEN CLIDOC.FILIAL = 12 THEN 7
+		WHEN CLIDOC.FILIAL = 14 THEN 8
+		WHEN CLIDOC.FILIAL = 51 THEN 9
+		WHEN CLIDOC.FILIAL = 52 THEN 10
+		WHEN CLIDOC.FILIAL = 53 THEN 11
+		WHEN CLIDOC.FILIAL = 54 THEN 12
+		WHEN CLIDOC.FILIAL = 50 THEN 2
+		ELSE 99 -- valor padrão
+	END AS filial_tratada,
 	'| ',		-- Codigo da Filial
 	CASE WHEN CADPOR.DEBITO = 'N' AND CADPOR.CREDITO = 'S' THEN '2' ELSE '1' END,			
 	'| ',		-- Tipo do Documento 1 - Receber e 2 - Pagar
@@ -2561,7 +2612,12 @@ ORDER BY PRODUTOID ASC
 	'| ',		-- Numero da Parcela
 	CONVERT(VARCHAR(100), CLIDOC.DT_EMISSAO, 103),			
 	'| ',		-- Data de Emissao
-	CONVERT(VARCHAR(100), CLIDOC.DT_VENCIMENTO, 103),			
+	CONVERT(VARCHAR(100),
+CASE
+	when CLIDOC.DT_VENCIMENTO < CLIDOC.DT_EMISSAO then CLIDOC.DT_EMISSAO
+	else CLIDOC.DT_VENCIMENTO
+		
+	end, 103) as DT_VENCIMENTO,			
 	'| ',		-- Data de Vencimento
 	CONVERT(VARCHAR(100), CLIDOC.DT_PAGAMENTO, 103),		
 	'| ',		-- Data de Baixa
@@ -2583,11 +2639,17 @@ ORDER BY PRODUTOID ASC
 	'| ',		-- Numero da Fatura
 	CAST(COALESCE(CLIDOC.DUPLICATA, '') AS VARCHAR(20)),			
 	'| ',		-- Numero da Duplicat
-	REPLACE(REPLACE(COALESCE(CLIDOC.TEXTO, ''), CHAR(13), ''), CHAR(10), ''),			
+	REPLACE(REPLACE(
+		COALESCE(CLIDOC.TEXTO, '') +
+		CASE
+			when
+				CLIDOC.DT_VENCIMENTO < CLIDOC.DT_EMISSAO
+				then  ' [VENCIMENTO AJUSTADO DE ' + CONVERT(VARCHAR(10), CLIDOC.DT_VENCIMENTO, 103) + ' PARA ' + CONVERT(VARCHAR(10), CLIDOC.DT_EMISSAO, 103) + ']'
+				else ''
+		end,
+		CHAR(13), ''), CHAR(10), ''),			
 	'| ',		-- Observacoes
-	CLIDOC.ATIVO 
-				-- Ativo
-
+	CLIDOC.ATIVO -- Ativo
 FROM CLIDOC 
 LEFT JOIN CADPOR ON CADPOR.PORTADOR = CLIDOC.PORTADOR
 WHERE CLIDOC.VR_PARCELA > COALESCE(CLIDOC.VR_PAGO, 0) AND CLIDOC.ATIVO = 1 and clidoc.filial = @filial
